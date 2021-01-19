@@ -67,7 +67,7 @@ Here below is the training and validation loss curve:
 
 ### Inference on unseen data
    
-Use the **[03-predict.ipynb](https://github.com/juglab/EmbedSeg/blob/v0.1-basel-dataset/examples/2d/basel-2020/03-predict.ipynb)** notebook, have a look at the last four code cells especially! 
+Use the **[03-predict.ipynb](https://github.com/juglab/EmbedSeg/blob/v0.1-basel-dataset/examples/2d/basel-2020/03-predict.ipynb)** notebook, have a look at the last four code cells especially. 
 To predict on a directory containing images, one could use *pseudo code* such as the following: 
 
 ```python3

@@ -39,18 +39,14 @@ class TwoDimensionalDataset(Dataset):
         self.real_size = len(self.image_list)
         self.transform = transform
         self.one_hot = one_hot
+        self.type = type
 
     def __len__(self):
 
         return self.real_size if self.size is None else self.size
 
     def convert_yx_to_cyx(self, im, key):
-        if im.ndim == 2 and key == 'image':  # gray-scale image
-            im = im[np.newaxis, ...]  # CYX
-        elif im.ndim == 3 and key == 'image':  # multi-channel image image
-            pass
-        else:
-            im = im[np.newaxis, ...]
+        im = im[np.newaxis, ...]
         return im
 
     def __getitem__(self, index):
@@ -84,23 +80,29 @@ class TwoDimensionalDataset(Dataset):
     @classmethod
     def decode_instance(cls, pic, one_hot, bg_id=None):
         pic = np.array(pic, copy=False, dtype=np.uint16)
-        if (one_hot):
-            instance_map = np.zeros((pic.shape[0], pic.shape[1], pic.shape[2]), dtype=np.uint8)
-            class_map = np.zeros((pic.shape[1], pic.shape[2]), dtype=np.uint8)
-        else:
-            instance_map = np.zeros((pic.shape[0], pic.shape[1]), dtype=np.uint8) #TODO
-            class_map = np.zeros((pic.shape[0], pic.shape[1]), dtype=np.uint8)
+        instance_map = np.zeros(pic.shape, dtype=np.uint8) #TODO
+        class_map = np.zeros(pic.shape, dtype=np.uint8)
 
         if bg_id is not None:
-            mask = pic > bg_id
+            if pic.ndim ==3:
+                for z in range(pic.shape[0]):
 
-            if mask.sum() > 0:
-                ids, _, _ = relabel_sequential(pic[mask])
+                    mask = pic[z] > bg_id
+                    if mask.sum() > 0:
+                        ids, _, _ = relabel_sequential(pic[z][mask])
 
-                instance_map[mask] = ids
-                if (one_hot):
-                    class_map[np.max(mask, axis=0)] = 1
-                else:
-                    class_map[mask] = 1
+                        instance_map[z][mask] = ids
+                        class_map[z][mask] = 1
+            else:
+                mask = pic > bg_id
+
+                if mask.sum() > 0:
+                    ids, _, _ = relabel_sequential(pic[mask])
+
+                    instance_map[mask] = ids
+                    if (one_hot):
+                        class_map[np.max(mask, axis=0)] = 1
+                    else:
+                        class_map[mask] = 1
 
         return instance_map, class_map

@@ -38,7 +38,7 @@ Please open a new terminal window and run the following commands one after the o
 ```shell
 git clone https://github.com/juglab/EmbedSeg.git
 cd EmbedSeg
-git checkout v0.1
+git checkout v0.1-basel-dataset
 conda env create -f EmbedSeg_environment.yml
 conda activate EmbedSegEnv
 python3 -m pip install -e .
@@ -47,33 +47,25 @@ cd examples/2d
 jupyter notebook
 ```
 
-Look in the `examples` directory,  and try out one (or all) of the three sets of notebooks (`dsb-2018`, `usiigaci-2017` or `bbbc010-2012`). Please make sure to select `Kernel > Change kernel` to `EmbedSegEnv`. 
+Look in the `examples` directory. If you would like to train the model from scratch, use `02-train.ipynb`. Otherwise, you could evaluate on unseen eimages using `03-predict.ipynb` and the trained model weights available [here](). Please make sure to select `Kernel > Change kernel` to `EmbedSegEnv` before running the notebooks. 
 
 
-### Training & Inference on your data
+### Results
+
+10 % of the available data was reserved for evaluation. In terms of the Average Precision [AP](https://cocodataset.org/#detection-eval) metric at different IOU thresholds, the model trained for ~40 epochs provided the following results:
+
+| Threshold | 0.50 | 0.55| 0.60 | 0.65| 0.70 | 0.75 | 0.80 | 0.85 | 0.90 
+|-	|-	|-	|-	|-	|- | -| - | -| -|	
+| | 0.933| 0.930 | 0.927| 0.923 | 0.917 | 0.900 | 0.847 | 0.755 |0.614
+
+
+Here below is the training and validation loss curve:
+
+
+
+
+
+### Inference on unseen data
    
-`*.tif`-type images and the corresponding masks should be respectively present under `images` and `masks`, under directories `train`, `val` and `test`. These are cropped in smaller patches in the notebook `01-data.ipynb`. The following would be a desired structure as to how data should be prepared.
-
-```
-data
-└───data-name
-    |───train
-	└───images
-		└───X0.tif
-		└───X1.tif
-		└───...
-		└───Xn.tif
-	└───masks
-		└───Y0.tif
-		└───Y1.tif
-		└───...
-		└───Yn.tif
-    |───val
-	└───images
-	└───masks
-    |───test
-	└───images
-	└───masks
-```
-
+Use the `03-predict.ipynb` and check out the last few code cells. 
 

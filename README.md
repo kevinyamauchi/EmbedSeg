@@ -75,7 +75,7 @@ from glob import glob
 import tifffile
 import os
 # input_dir_name = 'path-to-directory-containing-images'
-# output_dir_name = 'path-to-directory-where-prediction-should-be-saved'
+# output_dir_name = 'path-to-directory-where-predictions-should-be-saved'
 image_file_names = glob(input_dir_name/*.tif)
 for image_file_name in image_file_names:
   im = tifffile.imread(image_name.tif)

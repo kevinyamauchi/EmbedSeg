@@ -54,7 +54,7 @@ Look in the `examples` directory. If you would like to train the model from scra
 
 10 % of the available data was reserved for evaluation. In terms of the Average Precision [AP](https://cocodataset.org/#detection-eval) metric at different IOU thresholds, the model trained for ~40 epochs provided the following results:
 
-| Threshold | AP<sub>50</sub> | AP<sub>55</sub>| AP<sub>60</sub> | AP<sub>65</sub>| AP<sub>70</sub>| AP<sub>75</sub> | AP<sub>80</sub> | AP<sub>85</sub> | AP<sub>90</sub>
+| | AP<sub>50</sub> | AP<sub>55</sub>| AP<sub>60</sub> | AP<sub>65</sub>| AP<sub>70</sub>| AP<sub>75</sub> | AP<sub>80</sub> | AP<sub>85</sub> | AP<sub>90</sub>
 |-	|-	|-	|-	|-	|- | -| - | -| -|	
 | | 0.933| 0.930 | 0.927| 0.923 | 0.917 | 0.900 | 0.847 | 0.755 |0.614
 

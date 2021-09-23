@@ -444,7 +444,10 @@ def calculate_avg_background_intensity(data_dir, project_name, train_val_name, o
             ma = tifffile.imread(instance_names[i])
             bg_mask = ma == 0
             im = tifffile.imread(image_names[i])
-            statistics.append(np.average(im[bg_mask]))
+            if im.ndim == 3:
+                statistics.append(np.average(im[bg_mask]))
+            else:
+                statistics.append(np.average(im[:, bg_mask]))
     print("Average background intensity of the `{}` dataset set equal to {:.3f}".format(project_name,
                                                                                         np.mean(statistics)))
     return np.mean(statistics)

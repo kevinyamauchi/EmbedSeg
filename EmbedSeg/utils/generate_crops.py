@@ -283,7 +283,10 @@ def process_3d(im, inst, crops_dir, data_subset, crop_size_x, crop_size_y, crop_
         image = normalize(image, 1, 99.8, axis=(0, 1))
     instance = fill_label_holes(instance)
 
-    d, h, w = image.shape
+    if image.ndim == 3:
+        d, h, w = image.shape
+    else:
+        _, d, h, w = image.shape
     instance_np = np.array(instance, copy=False)
     object_mask = instance_np > 0
 
@@ -298,9 +301,14 @@ def process_3d(im, inst, crops_dir, data_subset, crop_size_x, crop_size_y, crop_
         jj = int(np.clip(ym - crop_size_y / 2, 0, h - crop_size_y))
         ii = int(np.clip(xm - crop_size_x / 2, 0, w - crop_size_x))
 
-        if (image[kk:kk + crop_size_z, jj:jj + crop_size_y, ii:ii + crop_size_x].shape == (
-        crop_size_z, crop_size_y, crop_size_x)):
+        if image.ndim == 3:
             im_crop = image[kk:kk + crop_size_z, jj:jj + crop_size_y, ii:ii + crop_size_x]
+            im_crop_shape = im_crop.shape
+        else:
+            im_crop = image[:, kk:kk + crop_size_z, jj:jj + crop_size_y, ii:ii + crop_size_x]
+            im_crop_shape = im_crop.shape[1:4]
+        if (im_crop_shape == (crop_size_z, crop_size_y, crop_size_x)):
+
             instance_crop = instance[kk:kk + crop_size_z, jj:jj + crop_size_y, ii:ii + crop_size_x]
             center_image_crop = generate_center_image_3d(instance_crop, center, ids, one_hot=one_hot,
                                                          anisotropy_factor=anisotropy_factor, speed_up=speed_up)

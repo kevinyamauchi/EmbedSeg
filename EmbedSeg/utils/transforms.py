@@ -1,5 +1,6 @@
 import collections
 import numpy as np
+from scipy.ndimage import rotate
 import torch
 from torchvision.transforms import transforms as T
 
@@ -12,7 +13,6 @@ class RandomRotationsAndFlips(T.RandomRotation):
         self.one_hot = one_hot
 
     def __call__(self, sample):
-
         angle = self.get_params(self.degrees)
         times = np.random.choice(4)
         flip = np.random.choice(2)
@@ -38,15 +38,19 @@ class RandomRotationsAndFlips_3d(T.RandomRotation):
     def __init__(self, keys=[], one_hot = False, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.keys = keys
+        self.axes = [(1, 0), (2, 1), (2, 0)]
         self.one_hot = one_hot
 
 
     def __call__(self, sample):
         angle = self.get_params(self.degrees)
+        axis_index = np.random.choice(3)
         times = np.random.choice(4)
         flip = np.random.choice(2)
         dir_rot = np.random.choice(3)
         dir_flip = np.random.choice(3)
+
+        axis = self.axes[axis_index]
 
         for idx, k in enumerate(self.keys):
 
@@ -57,6 +61,13 @@ class RandomRotationsAndFlips_3d(T.RandomRotation):
                 temp = np.ascontiguousarray(np.rot90(sample[k], times, (2, 3)))
             elif dir_rot == 2: # rotate about ZX
                 temp = np.ascontiguousarray(np.rot90(sample[k], 2*times, (3,1)))
+            
+            if temp.ndim == 3:
+                temp = rotate(temp, angle, axes=axis, reshape=False, order=self.order, mode=self.mode, cval=-1)
+            else:
+                channels = [rotate(temp[c], angle, axes=axis, reshape=False, order=0, mode='reflect', cval=-1) for c
+                        in range(temp.shape[0])]
+                temp = np.stack(channels, axis=0)
 
             if flip == 0:
                 sample[k] = temp

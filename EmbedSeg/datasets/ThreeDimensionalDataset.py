@@ -39,7 +39,9 @@ class ThreeDimensionalDataset(Dataset):
         self.one_hot = one_hot
 
     def convert_zyx_to_czyx(self, im, key):
-        im = im[np.newaxis, ...] # CZYX
+        if im.ndim == 3:
+            # if the image is not already 4D, add a dim
+            im = im[np.newaxis, ...] # CZYX
         return im
 
 
